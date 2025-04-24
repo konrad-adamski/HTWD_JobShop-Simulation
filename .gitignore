@@ -1,0 +1,21 @@
+__pycache__/
+
+# PyCharm
+.idea/
+*.iml
+
+# Jupyter Notebook
+ipynb_checkpoints/
+.ipynb_checkpoints/
+
+# VS Code (falls du es parallel nutzt)
+.vscode/
+
+# virtualenv
+venv/
+.venv/
+VENV/
+
+env/
+.env/
+ENV/
