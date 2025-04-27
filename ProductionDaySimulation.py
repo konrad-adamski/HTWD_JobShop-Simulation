@@ -86,11 +86,6 @@ class ProductionDaySimulation:
             planned_start = op["Start"]
             planned_duration = op["Duration"]
 
-            # Frühe Prüfung: Ob der geplante Start realistisch ist
-            if until is not None and planned_start + planned_duration > until:
-                print(f"[{planned_start:.1f}] SKIP {job_id} on {machine.name} — too late to even start (would end at {planned_start + planned_duration:.1f})")
-                continue
-
             sim_duration = duration_log_normal(planned_duration, vc=self.vc)
 
             delay = planned_start - self.env.now
