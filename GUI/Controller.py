@@ -8,6 +8,7 @@ class Controller:
         self.simulation = None
         self.machines = {}
         self.jobs = {}  # <-- Ergänzt: Dictionary für alle Jobs
+        self.job_color_idx = 0
         self.operations = {}  # <-- Ergänzt: Dictionary für aktive Operationen (optional, für Zugriff später)
 
     def job_started_on_machine(self, time_stamp, job_id, machine):
@@ -59,10 +60,28 @@ class Controller:
         for machine in machines:
             self.machines[machine.name] = machine
 
+    #def add_jobs(self, jobs_df):
+    #    self.jobs = {j: Job(j) for j in jobs_df}
 
-    def add_jobs(self, *jobs: Job):
-        for job in jobs:
-            self.jobs[job.job_id] = job
+    def update_jobs(self, *jobs_ids: str):
+        job_id_list = list(jobs_ids)  # NICHT als Set!
+
+        self.job_color_idx = 0
+
+        # 1. Neue Jobs hinzufügen
+        for job_id in job_id_list:
+            if job_id not in self.jobs:
+                self.jobs[job_id] = Job(job_id, self.job_color_idx)
+                self.job_color_idx += 1
+
+        # 2. Alte Jobs entfernen
+        old_job_ids = set(self.jobs.keys())
+        new_job_ids = set(job_id_list)
+
+        jobs_to_remove = old_job_ids - new_job_ids
+
+        for job_id in jobs_to_remove:
+            del self.jobs[job_id]
 
     def handle_undone(self, df_undone):
         for _, row in df_undone[df_undone["Start"].notna()].iterrows():

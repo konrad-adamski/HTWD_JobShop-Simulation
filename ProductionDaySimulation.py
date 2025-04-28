@@ -1,10 +1,11 @@
 import math
 import random
+import time
+
 import simpy
 import pandas as pd
 
 from GUI.Controller import Controller
-from Job import Job
 from Machine import Machine
 
 
@@ -77,10 +78,9 @@ class ProductionDaySimulation:
 
         self.dframe_schedule_plan = dframe_schedule_plan
         self.vc = vc
-        # self.env = simpy.Environment()
-        self.env = simpy.rt.RealtimeEnvironment(factor=1/28)  # 1/12 -> langsam; 1/20 -> mittel; 1/28 -> schnell
+        self.env = simpy.Environment()
+        #self.env = simpy.rt.RealtimeEnvironment(factor=1/12)  # 1/12 -> langsam; 1/18 -> mittel; 1/22 -> schnell
         self.machines = self._init_machines()
-        self.jobs = self._init_jobs()  # NEU
 
         self.starting_times_dict= {}
         self.finished_log = []
@@ -88,11 +88,6 @@ class ProductionDaySimulation:
     def _init_machines(self):
         unique_machines = self.dframe_schedule_plan["Machine"].unique()
         return {m: Machine(self.env, m) for m in unique_machines}
-
-    # Für GUI
-    def _init_jobs(self):
-        unique_jobs = self.dframe_schedule_plan["Job"].unique()
-        return {j: Job(j) for j in unique_jobs}
 
     def job_process(self, job_id, job_operations):
         for op in job_operations:
@@ -162,11 +157,13 @@ class ProductionDaySimulation:
         print(f"[{get_time_str(time_stamp)}] {job_id} started on {machine.name}")
         if self.controller:
             self.controller.job_started_on_machine(time_stamp, job_id, machine)
+            time.sleep(0.04)
 
     def job_finished_on_machine(self, time_stamp, job_id, machine, sim_duration):
         print(f"[{get_time_str(time_stamp)}] {job_id} finished on {machine.name} (after {get_duration(sim_duration)})")
         if self.controller:
             self.controller.job_finished_on_machine(time_stamp, job_id, machine, sim_duration)
+            time.sleep(0.12)
 
     def job_cannot_finish_on_time(self, job_id, machine, time_stamp, planned_duration):
         """
@@ -187,7 +184,9 @@ class ProductionDaySimulation:
     def set_controller(self, controller):
         self.controller = controller
         self.controller.add_machines(*self.machines.values())
-        self.controller.add_jobs(*self.jobs.values())
+
+        job_ids = job_ids = sorted(self.dframe_schedule_plan["Job"].unique())
+        self.controller.update_jobs(*job_ids)
 
 
 
@@ -211,8 +210,6 @@ def get_jssp_from_schedule(df_schedule: pd.DataFrame, duration_column: str = "Du
 if __name__ == "__main__":
     df_schedule_plan = pd.read_csv("data/schedule.csv")  # dein geplanter Tagesplan
     simulation = ProductionDaySimulation(df_schedule_plan, vc=0.25)
-    controller = Controller()
-    simulation.set_controller(controller)
     df_execution, df_undone = simulation.run(until=1440)
 
 

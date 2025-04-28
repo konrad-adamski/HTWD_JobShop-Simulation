@@ -14,11 +14,11 @@ class GUIView:
         self.main_frame.pack()
 
         # --- Gantt-Canvas (links) ---
-        self.gantt_canvas = GanttCanvas(self.main_frame)
+        self.gantt_canvas = GanttCanvas(self.main_frame, height=648)
         self.gantt_canvas.pack(side="left")
 
         # --- Legenden-Canvas (rechts) ---
-        self.legend_canvas = tk.Canvas(self.main_frame, width=128, height=576, bg="white")
+        self.legend_canvas = tk.Canvas(self.main_frame, width=128, height=648, bg="white")
         self.legend_canvas.pack(side="left")
 
     def setup_machines(self, machines):
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     root.title("Live Gantt Chart - Production Simulation")
 
     # Lade Tagesplan
-    df_schedule_plan = pd.read_csv("data/schedule.csv")
+    df_schedule_plan = pd.read_csv("../data/schedule_day0.csv")
 
     # Setze alles zusammen
     gui_view = GUIView(root)
