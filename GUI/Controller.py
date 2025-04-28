@@ -1,4 +1,5 @@
-from GUI.GUI_Classes import Job, Operation
+from GUI.GUI_Classes import Operation
+from Job import Job
 from Machine import Machine
 
 class Controller:
@@ -10,9 +11,6 @@ class Controller:
         self.operations = {}  # <-- Ergänzt: Dictionary für aktive Operationen (optional, für Zugriff später)
 
     def job_started_on_machine(self, time_stamp, job_id, machine):
-        if job_id not in self.jobs:
-            self.jobs[job_id] = Job(job_id)
-
         job = self.jobs[job_id]
         operation = Operation(job, machine.name, time_stamp, None)
 
@@ -51,5 +49,10 @@ class Controller:
     def add_machines(self, *machines: Machine):
         for machine in machines:
             self.machines[machine.name] = machine
+
+
+    def add_jobs(self, *jobs: Job):
+        for job in jobs:
+            self.jobs[job.job_id] = job
 
 

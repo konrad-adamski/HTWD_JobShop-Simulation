@@ -4,6 +4,7 @@ import simpy
 import pandas as pd
 
 from GUI.Controller import Controller
+from Job import Job
 from Machine import Machine
 
 
@@ -79,6 +80,7 @@ class ProductionDaySimulation:
         # self.env = simpy.Environment()
         self.env = simpy.rt.RealtimeEnvironment(factor=1/32)  # 1/16 -> langsam; 1/32 -> mittel; 1/64 -> schnell
         self.machines = self._init_machines()
+        self.jobs = self._init_jobs()  # NEU
 
         self.starting_times_dict= {}
         self.finished_log = []
@@ -86,6 +88,11 @@ class ProductionDaySimulation:
     def _init_machines(self):
         unique_machines = self.dframe_schedule_plan["Machine"].unique()
         return {m: Machine(self.env, m) for m in unique_machines}
+
+    # Für GUI
+    def _init_jobs(self):
+        unique_jobs = self.dframe_schedule_plan["Job"].unique()
+        return {j: Job(j) for j in unique_jobs}
 
     def job_process(self, job_id, job_operations):
         for op in job_operations:
@@ -180,6 +187,7 @@ class ProductionDaySimulation:
     def set_controller(self, controller):
         self.controller = controller
         self.controller.add_machines(*self.machines.values())
+        self.controller.add_jobs(*self.jobs.values())
 
 
 
