@@ -1,8 +1,7 @@
 import tkinter as tk
 import pandas as pd
 from Controller import Controller
-from ProductionDaySimulation import ProductionDaySimulation
-
+from ProductionDaySimulation import ProductionDaySimulation, get_jssp_from_schedule
 
 from GanttCanvas import GanttCanvas  # NEU!
 
@@ -28,11 +27,11 @@ class GUIView:
     def add_operation(self, operation, color="blue"):
         self.gantt_canvas.add_operation(operation, color)
 
-    def finish_operation(self, job_id, machine_name, time_stamp, color, break_bool=False):
-        self.gantt_canvas.finish_operation(job_id, machine_name, time_stamp, color, break_bool)
+    def finish_operation(self, job_id, machine_name, time_stamp, color, timeout_bool=False):
+        self.gantt_canvas.finish_operation(job_id, machine_name, time_stamp, color, timeout_bool)
 
-    def break_operation(self, job_id, machine_name):
-        self.gantt_canvas.break_operation(job_id, machine_name)
+    #def break_operation(self, job_id, machine_name):
+    #    self.gantt_canvas.finish_operation(job_id, machine_name, time_stamp, color, timeout_bool)
 
     def draw_legend(self, jobs):
         spacing = 25
@@ -79,7 +78,13 @@ if __name__ == "__main__":
     import threading
 
     def run_simulation():
-        simulation.run()
+        df_execution, df_undone = simulation.run()
+        controller.handle_undone(df_undone)
+
+        print("\n====================================================")
+        for j, val in get_jssp_from_schedule(df_undone, duration_column="Planned Duration").items():
+            print(j + ": " + str(val))
+
 
     sim_thread = threading.Thread(target=run_simulation)
     sim_thread.start()

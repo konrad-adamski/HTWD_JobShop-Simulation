@@ -17,7 +17,7 @@ class GanttCanvas(tk.Canvas):
         self.machine_positions = {}
         self.operations = {}
 
-        self.draw_time_axis()
+        # self.draw_time_axis()
 
     def draw_time_axis(self):
         """Zeichnet die Zeitachse (oben) von 0 bis total_minutes."""
@@ -28,11 +28,16 @@ class GanttCanvas(tk.Canvas):
         for i in range(num_ticks + 1):
             minutes = i * interval
             x = self.x_offset + minutes * pixels_per_minute
+
+            # Kurzer Strich oben
             self.create_line(x, 0, x, 10, fill="black")
 
-            # Zeitbeschriftung einheitlich rechts vom Strich
+            # Zeitbeschriftung
             hours = minutes // 60
             self.create_text(x + 5, 12, text=f"{hours}h", anchor="nw", font=("Arial", 8))
+
+            # Gestrichelte Linie nach unten
+            self.create_line(x, 20, x, self.height, fill="gray", dash=(2, 4))
 
     def setup_machines(self, machines):
         initial_offset = 60  # Abstand der ersten Maschine
@@ -42,6 +47,7 @@ class GanttCanvas(tk.Canvas):
 
         self.config(height=new_height)
         self.height = new_height
+        self.draw_time_axis()
 
         for idx, machine in enumerate(sorted(machines)):
             y = initial_offset + idx * spacing
@@ -62,7 +68,7 @@ class GanttCanvas(tk.Canvas):
         )
         self.operations[(operation.job.job_id, operation.machine_name)] = (operation, rect)
 
-    def finish_operation(self, job_id, machine_name, time_stamp, color, break_bool=False):
+    def finish_operation(self, job_id, machine_name, time_stamp, color, timeout_bool=False):
         key = (job_id, machine_name)
         if key in self.operations:
             operation, rect = self.operations[key]
@@ -74,12 +80,12 @@ class GanttCanvas(tk.Canvas):
             self.coords(rect, x_start, y - self.operation_half_height, x_end, y + self.operation_half_height)
             self.itemconfig(rect, fill=color)
 
-            if break_bool:
-                for offset in range(int(x_start), int(x_end), 6):
+            if timeout_bool:
+                for offset in range(int(x_start), int(x_end+2), 6):
                     self.create_line(
-                        offset, y - self.operation_half_height,
-                        offset - 5, y + self.operation_half_height,
-                        fill="lightblue", width=1
+                        offset + 6 , y - self.operation_half_height,
+                        offset - 3, y + self.operation_half_height,
+                        fill="red", width=1
                     )
 
     def break_operation(self, job_id, machine_name):

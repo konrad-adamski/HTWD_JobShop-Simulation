@@ -78,7 +78,7 @@ class ProductionDaySimulation:
         self.dframe_schedule_plan = dframe_schedule_plan
         self.vc = vc
         # self.env = simpy.Environment()
-        self.env = simpy.rt.RealtimeEnvironment(factor=1/20)  # 1/16 -> langsam; 1/32 -> mittel; 1/64 -> schnell
+        self.env = simpy.rt.RealtimeEnvironment(factor=1/28)  # 1/12 -> langsam; 1/20 -> mittel; 1/28 -> schnell
         self.machines = self._init_machines()
         self.jobs = self._init_jobs()  # NEU
 
@@ -214,6 +214,7 @@ if __name__ == "__main__":
     controller = Controller()
     simulation.set_controller(controller)
     df_execution, df_undone = simulation.run(until=1440)
+
 
     print("=== Abgeschlossene Operationen ===")
     print(df_execution)

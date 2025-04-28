@@ -1,4 +1,4 @@
-from GUI.GUI_Classes import Operation
+from GUI.Operation import Operation
 from Job import Job
 from Machine import Machine
 
@@ -25,7 +25,7 @@ class Controller:
 
     def job_finished_on_machine(self, time_stamp, job_id, machine, sim_duration):
         key = (job_id, machine.name)
-        if key in self.operations:
+        if key in self.operations: # wozu???
             operation = self.operations[key]
             operation.duration = sim_duration
         else:
@@ -43,8 +43,17 @@ class Controller:
         color = self.jobs[job_id].color
 
         if self.gui_view:
-            self.gui_view.finish_operation(job_id, machine.name, time_stamp, color, True)
-            self.gui_view.break_operation(job_id, machine.name)
+            pass # unnötig da nicht begonnen
+            #self.gui_view.finish_operation(job_id, machine.name, time_stamp, color, True)
+            #self.gui_view.break_operation(job_id, machine.name)
+
+
+    def job_time_out(self, job_id, machine_name):
+        # Hier: Color holen aus dem Job
+        color = self.jobs[job_id].color
+
+        if self.gui_view:
+            self.gui_view.finish_operation(job_id, machine_name, 1440, color, True)
 
     def add_machines(self, *machines: Machine):
         for machine in machines:
@@ -54,5 +63,11 @@ class Controller:
     def add_jobs(self, *jobs: Job):
         for job in jobs:
             self.jobs[job.job_id] = job
+
+    def handle_undone(self, df_undone):
+        for _, row in df_undone[df_undone["Start"].notna()].iterrows():
+            job_id = row["Job"]
+            machine = row["Machine"]
+            self.job_time_out(job_id, machine)
 
 
