@@ -27,11 +27,9 @@ class GUIView:
     def add_operation(self, operation, color="blue"):
         self.gantt_canvas.add_operation(operation, color)
 
-    def finish_operation(self, job_id, machine_name, time_stamp, color, timeout_bool=False):
-        self.gantt_canvas.finish_operation(job_id, machine_name, time_stamp, color, timeout_bool)
+    def finish_operation(self, job_id, machine_name, time_stamp, color, timeout = False):
+        self.gantt_canvas.finish_operation(job_id, machine_name, time_stamp, color, timeout)
 
-    #def break_operation(self, job_id, machine_name):
-    #    self.gantt_canvas.finish_operation(job_id, machine_name, time_stamp, color, timeout_bool)
 
     def draw_legend(self, jobs):
         spacing = 25

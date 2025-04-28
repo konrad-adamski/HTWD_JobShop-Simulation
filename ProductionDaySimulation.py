@@ -148,8 +148,6 @@ class ProductionDaySimulation:
             lambda row: self.starting_times_dict.get((row["Job"], row["Machine"])),
             axis=1
         )
-
-
         return dframe_execution, dframe_undone
 
     # Ausgaben ------------------------------------------------------------------
@@ -175,8 +173,6 @@ class ProductionDaySimulation:
                 f"[{get_time_str(time_stamp)}] {job_id} interrupted before machine "
                 f"{machine.name} — would finish too late at {get_time_str(time_stamp + planned_duration)}"
             )
-            if self.controller:
-                self.controller.job_break(job_id, machine, time_stamp)
             return True
         return False
 

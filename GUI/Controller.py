@@ -39,16 +39,6 @@ class Controller:
             self.gui_view.finish_operation(job_id, machine.name, time_stamp, color)
 
 
-    def job_break(self, job_id, machine, time_stamp):
-        # Hier: Color holen aus dem Job
-        color = self.jobs[job_id].color
-
-        if self.gui_view:
-            pass # unnötig da nicht begonnen
-            #self.gui_view.finish_operation(job_id, machine.name, time_stamp, color, True)
-            #self.gui_view.break_operation(job_id, machine.name)
-
-
     def job_time_out(self, job_id, machine_name):
         # Hier: Color holen aus dem Job
         color = self.jobs[job_id].color
@@ -60,8 +50,6 @@ class Controller:
         for machine in machines:
             self.machines[machine.name] = machine
 
-    #def add_jobs(self, jobs_df):
-    #    self.jobs = {j: Job(j) for j in jobs_df}
 
     def update_jobs(self, *jobs_ids: str):
         job_id_list = list(jobs_ids)  # NICHT als Set!
