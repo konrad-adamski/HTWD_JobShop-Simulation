@@ -44,7 +44,7 @@ def job_process(env, job_id, job_operations, machines, until=None):
             sim_start = env.now
 
             if skip_if_too_late(job_id, machine.name, sim_start, planned_duration, until):
-                continue
+                return
 
             print(f"[{sim_start:.1f}] {job_id} started on {machine.name}")
             yield env.timeout(sim_duration)

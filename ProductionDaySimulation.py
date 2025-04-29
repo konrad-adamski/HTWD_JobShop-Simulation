@@ -204,7 +204,7 @@ def get_jssp_from_schedule(df_schedule: pd.DataFrame, duration_column: str = "Du
 
 
 if __name__ == "__main__":
-    df_schedule_plan = pd.read_csv("data/schedule.csv")  # dein geplanter Tagesplan
+    df_schedule_plan = pd.read_csv("data/04_schedule_plan_firstday.csv")  # dein geplanter Tagesplan
     simulation = ProductionDaySimulation(df_schedule_plan, vc=0.25)
     df_execution, df_undone = simulation.run(until=1440)
 

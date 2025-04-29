@@ -61,7 +61,8 @@ if __name__ == "__main__":
     root.title("Live Gantt Chart - Production Simulation")
 
     # Lade Tagesplan
-    df_schedule_plan = pd.read_csv("../data/schedule_day0.csv")
+
+    df_schedule_plan = pd.read_csv("../data/04_schedule_plan_firstday.csv")
 
     # Setze alles zusammen
     gui_view = GUIView(root)
